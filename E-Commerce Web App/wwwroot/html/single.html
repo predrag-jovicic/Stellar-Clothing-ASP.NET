@@ -1,0 +1,278 @@
+
+				if(isset($_GET['product'])){
+					$productID = $_GET['product'];
+					echo '<input type="hidden" id="productID" value="' . $productID .'"';
+					//$regID = "/^[0-9]{1,6}$/";
+				}
+		//query for retrieving products' sizes
+		$querysizes = "SELECT s.size_id, s.size as size,s.size_id FROM ((((productphotos pp INNER JOIN products p ON p.product_id = pp.product_id) INNER JOIN prices pr ON p.product_id = pr.product_id) INNER JOIN products_sizes_colors psc ON psc.product_id = p.product_id) INNER JOIN sizes s ON s.size_id = psc.size_id) INNER JOIN colors c ON c.color_id = psc.color_id WHERE p.product_id = :productID AND (psc.active = 1 AND quantity > 0) GROUP BY s.size ORDER BY s.size_id";
+		//query for retrieving products' colors
+		$querycolors = "SELECT c.color_id, c.color as color FROM ((((productphotos pp INNER JOIN products p ON p.product_id = pp.product_id) INNER JOIN prices pr ON p.product_id = pr.product_id) INNER JOIN products_sizes_colors psc ON psc.product_id = p.product_id) INNER JOIN sizes s ON s.size_id = psc.size_id) INNER JOIN colors c ON c.color_id = psc.color_id WHERE p.product_id = :productID AND (psc.active = 1 AND quantity > 0) GROUP BY c.color";
+		//query for retrieving products' name
+		$queryname = "SELECT p.name as name FROM ((((productphotos pp INNER JOIN products p ON p.product_id = pp.product_id) INNER JOIN prices pr ON p.product_id = pr.product_id) INNER JOIN products_sizes_colors psc ON psc.product_id = p.product_id) INNER JOIN sizes s ON s.size_id = psc.size_id) INNER JOIN colors c ON c.color_id = psc.color_id WHERE p.product_id = :productID GROUP BY p.product_id";
+		//query for retrieving products' description
+		$querydesc = "SELECT p.description as description FROM ((((productphotos pp INNER JOIN products p ON p.product_id = pp.product_id) INNER JOIN prices pr ON p.product_id = pr.product_id) INNER JOIN products_sizes_colors psc ON psc.product_id = p.product_id) INNER JOIN sizes s ON s.size_id = psc.size_id) INNER JOIN colors c ON c.color_id = psc.color_id WHERE p.product_id = :productID GROUP BY p.product_id";
+		//query for retrieving products' price
+		$queryprice = "SELECT pr.net_price as price FROM ((((productphotos pp INNER JOIN products p ON p.product_id = pp.product_id) INNER JOIN prices pr ON p.product_id = pr.product_id) INNER JOIN products_sizes_colors psc ON psc.product_id = p.product_id) INNER JOIN sizes s ON s.size_id = psc.size_id) INNER JOIN colors c ON c.color_id = psc.color_id WHERE p.product_id = :productID AND pr.active = 1 GROUP BY p.product_id";
+		//query for retrieving products' photos
+		$queryphotos = "SELECT DISTINCT pp.source as imglink, pp.alt as alt FROM ((((productphotos pp INNER JOIN products p ON p.product_id = pp.product_id) INNER JOIN prices pr ON p.product_id = pr.product_id) INNER JOIN products_sizes_colors psc ON psc.product_id = p.product_id) INNER JOIN sizes s ON s.size_id = psc.size_id) INNER JOIN colors c ON c.color_id = psc.color_id WHERE p.product_id = :productID";
+		//query for retrieving products' ratings
+		$queryratings = "SELECT ROUND(AVG(rating_id),2) as rating FROM `users_ratings` WHERE product_id = :productID";
+		//query for retrieving similar products 
+		$querysimilar = "SELECT p.product_id as productID, pp.source as imagelink, pp.alt as alt, p.name as productname, ROUND(pr.discount) as discount, pr.net_price as price FROM (products p INNER JOIN prices pr ON pr.product_id = p.product_id)INNER JOIN productphotos pp ON pp.product_id = p.product_id WHERE p.product_id = :productID AND GROUP BY p.product_id = rand(1,128) ORDER BY pr.discount DESC LIMIT 4";
+		$result = $connection->query($query)->fetchAll();
+	
+	<div class="content">
+		<div class="single">
+			<div class="container">
+				<div class="single-grids">
+					<div class="col-md-4 single-grid1">
+						<h2>Options</h2>
+							<ul>
+								 if(!isset($_SESSION['user'])){
+								echo '<li><a href="index.php?page=login">Login</a></li>';
+								echo '<li><a href="index.php?page=account">Register</a></li>';
+								}
+								if(isset($_SESSION['user']))
+									echo '<li><a href="index.php?page=checkout">View shopping cart</a></li>';
+								
+								<li><a href="login.html">Contact us</a></li>
+							</ul>
+					</div>
+					<div id="popupproduct">
+						<div class="closeButton">&times;</div>
+						<div id="popupheadproduct">
+								<p>The product has been added to the shopping cart.</p>
+						</div>
+						<input type="button" value="OK" id="okdugme"/>
+			</div>
+					<div class="col-md-4 single-grid">		
+						<div class="flexslider">
+							<ul class="slides">
+								 
+								$preparedQuery = $connection->prepare($queryphotos);
+								$preparedQuery->bindParam(":productID",$productID);
+								$preparedQuery->execute();
+								$result=$preparedQuery->fetchAll();
+								foreach($result as $row):
+								
+								<li data-thumb="$row->imglink">
+									<div class="thumb-image"> <img src="$row->imglink" data-imagezoom="true" alt="$row->alt" class="img-responsive"> </div>
+								</li>
+								 endforeach; 
+							</ul>
+						</div>
+					</div>	
+					<div class="col-md-4 single-grid simpleCart_shelfItem">		
+					
+						$preparedQuery = $connection->prepare($queryname);
+						$preparedQuery->bindParam(":productID",$productID);
+						$preparedQuery->execute();
+						$result = $preparedQuery->fetch();
+						echo "<h3>$result->name</h3>";
+						$preparedQuery = $connection->prepare($querydesc);
+						$preparedQuery->bindParam(":productID",$productID);
+						$preparedQuery->execute();
+						$result = $preparedQuery->fetch();
+							echo "<p>$result->description</p>";
+							
+								<ul class="chooseoption">
+									<h3>Size</h3>
+										
+										$preparedQuery = $connection->prepare($querysizes);
+										$preparedQuery->bindParam(":productID",$productID);
+										$preparedQuery->execute();
+										$result = $preparedQuery->fetchAll();
+										foreach($result as $row):
+										
+										<li><a class="productsize" href="#" value=" $row->size_id "> $row->size</a></li>
+										 endforeach 
+								</ul>
+								<ul class="chooseoption">
+									<h3>Color</h3>
+									<div id="fetchcolors">
+									</div>
+								</ul>
+							<div class="galry">
+								<div class="rating">
+									<span>☆</span>
+									<span>☆</span>
+									<span>☆</span>
+									<span>☆</span>
+									<span>☆</span>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+								<p class="qty"> Qty :  </p><input min="1" type="number" id="quantity" name="quantity" value="1" class="form-control input-small">
+							<div class="btn_form">
+								<a href="#" class="add-cart item_add">ADD TO CART</a>	
+							</div>
+							<div class="prices">
+									
+										$preparedQuery = $connection->prepare($queryprice);
+										$preparedQuery->bindParam(":productID",$productID);
+										$preparedQuery->execute();
+										$result = $preparedQuery->fetch();
+									
+									<h5 class="item_price">€$result->price</h5>
+									<input type="hidden" id="price" value="$result->price"/>
+							</div>
+					</div>
+					<div class="clearfix"> </div>
+				</div>
+			</div>
+		</div>
+		<input type="hidden" id="itemID" value="1"/>
+<!-- collapse -->
+		<div class="collpse">
+		<div class="container">
+		<div class="panel-group collpse" id="accordion" role="tablist" aria-multiselectable="true">
+		  <div class="panel panel-default">
+			<div class="panel-heading" role="tab" id="headingThree">
+			  <h4 class="panel-title">
+				<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+				  Ratings
+				</a>
+			  </h4>
+			</div>
+			<div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+			  <div class="panel-body">
+				 $preparedrating = $connection->prepare($queryratings);
+				$preparedrating->bindParam(":productID",$productID);
+				$preparedrating->execute();
+				$result = $preparedrating->fetch();
+				
+				 if(empty($result->rating)){
+					echo "The product hasn't been rated by anyone.";
+				} else {
+					echo "Average rating for this product is: $result->rating";
+				}
+				
+			  </div>
+			</div>
+		  </div>
+		  <div class="panel panel-default">
+			<div class="panel-heading" role="tab" id="headingFour">
+			  <h4 class="panel-title">
+				<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+				  help
+				</a>
+			  </h4>
+			</div>
+			<div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+			  <div class="panel-body">
+				To add a product to the shopping cart, you must be logged in. If you don't have an account, please register. It's free and easy to do. If you are supplied with the information about sizes, that means that many sizes are available. So you have to choose the size you want. After choosing a size, you will be supplied with the information about available colors. Finally, you have to choose a quantity and press a button 'Add to cart'. Feel free to rate a product
+			  </div>
+			</div>
+		  </div>
+		</div>
+	</div>
+</div>
+<!-- collapse -->
+<!--
+		<div class="related-products">
+			<div class="container">
+				<h3>See also</h3>
+				<div class="product-model-sec single-product-grids">
+					<div class="product-grid single-product">
+						<a href="single.html">
+						<div class="more-product"><span> </span></div>						
+						<div class="product-img b-link-stripe b-animate-go  thickbox">
+							<img src="images/m1.jpg" class="img-responsive" alt="">
+							<div class="b-wrapper">
+							<h4 class="b-animate b-from-left  b-delay03">							
+							<button> + </button>
+							</h4>
+							</div>
+						</div>
+						</a>					
+						<div class="product-info simpleCart_shelfItem">
+							<div class="product-info-cust prt_name">
+								<h4>Product #1</h4>								
+								<span class="item_price">$187.95</span>
+								<div class="ofr">
+								  <p class="pric1"><del>Rs 280</del></p>
+						          <p class="disc">[12% Off]</p>
+								</div>
+								<div class="clearfix"> </div>
+							</div>												
+						</div>
+					</div>
+					<div class="product-grid single-product">
+						<a href="single.html">
+						<div class="more-product"><span> </span></div>						
+						<div class="product-img b-link-stripe b-animate-go  thickbox">
+							<img src="images/m2.jpg" class="img-responsive" alt="">
+							<div class="b-wrapper">
+							<h4 class="b-animate b-from-left  b-delay03">							
+							<button> + </button>
+							</h4>
+							</div>
+						</div>
+						</a>					
+						<div class="product-info simpleCart_shelfItem">
+							<div class="product-info-cust prt_name">
+								<h4>Product #1</h4>								
+								<span class="item_price">$187.95</span>
+								<div class="ofr">
+								  <p class="pric1"><del>Rs 280</del></p>
+						          <p class="disc">[12% Off]</p>
+								</div>
+								<div class="clearfix"> </div>
+							</div>												
+						</div>
+					</div>
+					<div class="product-grid single-product">
+						<a href="single.html">
+						<div class="more-product"><span> </span></div>						
+						<div class="product-img b-link-stripe b-animate-go  thickbox">
+							<img src="images/m3.jpg" class="img-responsive" alt="">
+							<div class="b-wrapper">
+							<h4 class="b-animate b-from-left  b-delay03">							
+							<button> + </button>
+							</h4>
+							</div>
+						</div>
+						</a>					
+						<div class="product-info simpleCart_shelfItem">
+							<div class="product-info-cust prt_name">
+								<h4>Product #1</h4>								
+								<span class="item_price">$187.95</span>
+								<div class="ofr">
+								  <p class="pric1"><del>Rs 280</del></p>
+						          <p class="disc">[12% Off]</p>
+								</div>
+								<div class="clearfix"> </div>
+							</div>												
+						</div>
+					</div>
+					<div class="product-grid single-product">
+						<a href="single.html">
+						<div class="more-product"><span> </span></div>						
+						<div class="product-img b-link-stripe b-animate-go  thickbox">
+							<img src="images/m4.jpg" class="img-responsive" alt="">
+							<div class="b-wrapper">
+							<h4 class="b-animate b-from-left  b-delay03">							
+							<button> + </button>
+							</h4>
+							</div>
+						</div>
+						</a>					
+						<div class="product-info simpleCart_shelfItem">
+							<div class="product-info-cust prt_name">
+								<h4>Product #1</h4>								
+								<span class="item_price">$187.95</span>
+								<div class="ofr">
+								  <p class="pric1"><del>Rs 280</del></p>
+						          <p class="disc">[12% Off]</p>
+								</div>
+								<div class="clearfix"> </div>
+							</div>												
+						</div>
+					</div>
+					<div class="clearfix"> </div>
+				</div>
+			</div>
+		</div>
+</div>
+-->

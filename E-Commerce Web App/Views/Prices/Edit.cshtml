@@ -1,0 +1,51 @@
+﻿@model E_Commerce_Web_App.Models.Price
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit</h2>
+
+<h4>Price</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Price_id" />
+            <div class="form-group">
+                <label asp-for="Net_price" class="control-label"></label>
+                <input asp-for="Net_price" class="form-control" />
+                <span asp-validation-for="Net_price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Discount" class="control-label"></label>
+                <input asp-for="Discount" class="form-control" />
+                <span asp-validation-for="Discount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="Active" /> @Html.DisplayNameFor(model => model.Active)
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Product_id" class="control-label"></label>
+                <select asp-for="Product_id" class="form-control" asp-items="ViewBag.Product_id"></select>
+                <span asp-validation-for="Product_id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

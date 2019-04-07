@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <RootNamespace>E_Commerce_Web_App</RootNamespace>
+    <UserSecretsId>8528dabe-8198-4645-8ce6-8597c0a587b9</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20190220222553_AutoIncrementFixed.cs" />
+    <Compile Remove="Migrations\20190223182654_Initial.cs" />
+    <Compile Remove="Migrations\20190224230056_UpdatedHeadingMenuTable.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\account.cshtml" />
+    <Content Remove="Views\author.cshtml" />
+    <Content Remove="Views\checkout.cshtml" />
+    <Content Remove="Views\contact.cshtml" />
+    <Content Remove="Views\home.cshtml" />
+    <Content Remove="Views\login.cshtml" />
+    <Content Remove="Views\products.cshtml" />
+    <Content Remove="Views\single.cshtml" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0" />
+    <PackageReference Include="SendGrid" Version="9.10.0" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Include="Views\Home\Register.cshtml" />
+    <None Include="Views\Home\Author.cshtml" />
+    <None Include="Views\Home\Checkout.cshtml" />
+    <None Include="Views\Home\Contact.cshtml" />
+    <None Include="Views\Home\Index.cshtml" />
+    <None Include="Views\Home\Login.cshtml" />
+    <None Include="Views\Home\Products.cshtml" />
+    <None Include="Views\Home\Single.cshtml" />
+  </ItemGroup>
+
+</Project>

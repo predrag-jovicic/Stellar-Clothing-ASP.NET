@@ -1,0 +1,42 @@
+﻿@model E_Commerce_Web_App.Models.Price
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Price</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Net_price)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Net_price)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Discount)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Discount)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Active)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Active)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Product)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Product.Description)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Price_id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

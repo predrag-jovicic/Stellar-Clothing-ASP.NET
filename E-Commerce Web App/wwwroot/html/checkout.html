@@ -1,0 +1,125 @@
+<!-- checkout -->
+
+<!-- 	if(!isset($_SESSION['user'])){
+		echo "You don't have a permission";
+	}
+	if(isset($_SESSION['products'])):
+		$products = $_SESSION['products'];
+		$noproducts = count($products);
+		$totalprice = 0;
+		if($noproducts>0): -->
+
+<div class="content">
+	<div class="cart-items">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-10">
+					<h2>My Shopping Bag</h2>
+				</div>
+				<div class="col-sm-2">
+					<input type="button" id="eraseallbtn" value="Delete all"/>
+				</div>
+			</div>
+				 <!-- $counter = 1
+				 foreach($products as $product):
+				$sizeID = $product['sizeID'];
+				$colorID = $product['colorID'];
+				$productID = $product['productID'];
+				$quantity = $product['quantity'];
+				$price = $product['price'];
+				$totalprice += $price;
+				$querySize = "SELECT size FROM sizes WHERE size_id = $sizeID";
+				$queryColor = "SELECT color FROM colors WHERE color_id = $colorID";
+				$queryPhoto = "SELECT source, alt FROM products p INNER JOIN productphotos ph ON ph.product_id = p.product_id WHERE p.product_id = $productID GROUP BY p.product_id";
+				$size = $connection->query($querySize)->fetch();
+				$color = $connection->query($queryColor)->fetch();
+				$photo = $connection->query($queryPhoto)->fetch(); -->
+	
+			<div class="cart-header">
+				<div class="cart-sec simpleCart_shelfItem">
+					<div class="cart-item cyc">
+						<!-- <img src="$photo->source" class="img-responsive" alt="$photo->alt"> -->
+					</div>
+					<div class="cart-item-info">
+						<h3>
+							<a href="#"> Product #<!-- $counter++ --></a>
+							<span>Size: &nbsp <!-- $size->size --> </span>
+							<span>Color: &nbsp<span id="<!-- $color->color -->"></span></span>
+						</h3>
+						<ul class="qty">
+							<li>
+								<p>Quantity: &nbsp <!-- $quantity --></p>
+							</li>
+						</ul>
+						<div class="delivery">
+							<p>Price : €<!-- $price --></p>
+							<div class="clearfix"></div>
+						</div>
+					</div>
+					<div class="clearfix"></div>
+
+				</div>
+			</div>
+			 <!-- endforeach;  -->
+			<div id="totalpart" class="row">
+				<div class="col-md-11">
+					<p>Cost of delivery:</p>
+				</div>
+				<div class="col-md-1">
+					<p>€20 - €50</p>
+				</div>
+				<div class="col-md-11">
+					<p>Total:</p>
+				</div>
+				<div class="col-md-1">
+					<p><strong>€<!-- $totalprice --></strong></p>
+				</div>
+			</div>
+			<div class="row" id="finishingdiv">
+				<div class="col-md-4 col-lg-6">
+					<input id="orderbtn" type='submit' value="Order"/>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- checkout -->
+</div>
+<script>
+/* $("#orderbtn").on("click",function(){
+	$.ajax({
+		url: "logic/ajaxorder.php",
+		type: "POST",
+		data : {
+			orderbtn : true
+		},
+		success: function(){
+			$(".cart-items .container").html("Your order has been placed");
+		},
+		error: function(xhr){
+			switch(xhr.status){
+				case 500:
+				$(".cart-items .container").html("Server error");
+				break;
+				case 422:
+				$(".cart-items .container").html("The error occured during processing your request. You added more quantity for product(s) than it's available. Erase products from the cart and start again");
+				break;
+			}
+		}
+	});
+}); */
+/* $("#eraseallbtn").on("click",function(){
+	$.ajax({
+		url: "logic/eraseall.php",
+		type: "POST",
+		data : {
+			erasebtn : true
+		},
+		success: function(){
+			$(".cart-items .container").html("You erased all the products from your shopping cart");
+		},
+	});
+}); */
+</script>
+<!-- endif; if($noproducts==0){
+	echo "<div class='content'><h2 style='margin:15rem' align='center'>There are no products in the shopping cart</h2></div>";
+} endif;  -->

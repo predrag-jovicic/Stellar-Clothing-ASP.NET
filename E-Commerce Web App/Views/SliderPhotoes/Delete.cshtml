@@ -1,0 +1,39 @@
+﻿@model E_Commerce_Web_App.Models.SliderPhoto
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>SliderPhoto</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Source)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Source)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Alt)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Alt)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Slider)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Slider.Text)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Photo_id" />
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

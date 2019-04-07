@@ -1,0 +1,87 @@
+@model HomePageViewModel
+<!-- $query = "SELECT p.product_id as productID, pp.source as imagelink, pp.alt as alt, p.name as productname, ROUND(pr.discount) as discount, pr.net_price as price FROM (products p INNER JOIN prices pr ON pr.product_id = p.product_id)INNER JOIN productphotos pp ON pp.product_id = p.product_id WHERE pr.active = 1 GROUP BY p.product_id ORDER BY pr.discount DESC LIMIT 4";
+$result = $connection->query($query)->fetchAll();
+$sliderquery = "SELECT source, alt FROM slider s INNER JOIN sliderphotos sp ON s.slider_id = sp.slider_id WHERE active = 1";
+$sliderresult = $connection->query($sliderquery)->fetchAll();
+$sliderquery = "SELECT * FROM slider";
+$sliderTitle = $connection->query($sliderquery)->fetch(); -->
+
+<div class="banner-section">
+    <div id="popup">
+        <div class="closeButton">&times;</div>
+        <div id="popuphead">
+            <h1>Welcome!</h1>
+            <p>By clicking OK you are accepting our terms of use. JavaScript must be enabled all the time. Otherwise, the site won't work properly.</p>
+        </div>
+        <input type="button" value="OK" id="okdugme" />
+    </div>
+    <div class="container">
+        <div class="banner-grids">
+            <div class="col-md-4 banner-grid">
+                <h2>@Model.Slider.Title</h2>
+                <p>@Model.Slider.Text</p>
+                <a asp-action="Products" asp-route-category="men" asp-route-subcategory="accessories" class="button"> shop now </a>
+            </div>
+            <div class="col-lg-8 banner-grid1 flexslider">
+                <ul class="slides">
+                    <!-- foreach($sliderresult as $row): -->
+                    @foreach (var sliderPhoto in Model.Slider.SliderPhotos)
+                    {
+                        <li><img src="@sliderPhoto.Source" class="img-responsive" alt="@sliderPhoto.Alt" /></li>
+                    }
+                    <!-- endforeach; -->
+                </ul>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+<!--sreen-gallery-cursual-->
+		</div>
+		</div>
+<div class="gallery">
+    <div class="container">
+        <h3>Featured products - TOP SALE</h3>
+        <div class="gallery-grids">
+
+            <!-- foreach($result as $row): -->
+            @foreach (var product in Model.TopProducts)
+            {
+
+                <div class="col-md-3 gallery-grid">
+                    <a asp-controller="Home" asp-action="Single" asp-route-id="@product.Product_id">
+                        <img src="@product.Photo.Source" class="img-responsive" alt="@product.Photo.Alt" />
+                        <div class="gallery-info">
+                            <div class="quick">
+                                <p><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> view</p>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="galy-info">
+                        <p>@product.Name</p>
+                        <div class="galry">
+                            <div class="prices">
+                                <h5 class="item_price">€@product.Price.Net_price</h5>
+                            </div>
+                            <div><p><i>Discount: @product.Price.Discount %</i></p></div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- endforeach; -->
+            }
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/js/script1.js"></script>
+    <script>
+        $(window).load(function () {
+            $(".flexslider").flexslider({
+                animation: "fade"
+            });
+        });
+    </script>
+} 

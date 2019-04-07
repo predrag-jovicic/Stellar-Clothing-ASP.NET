@@ -1,0 +1,166 @@
+
+	if(isset($_GET['category']) && isset($_GET['subcategory'])){
+		$category = $_GET['category'];
+		$subcategory = $_GET['subcategory'];
+		$query = "SELECT pp.source as imgsrc, pp.alt as alt, p.product_id as productID, pr.net_price as price, round(pr.discount) as discount FROM ((productphotos pp INNER JOIN products p ON p.product_id = pp.product_id) INNER JOIN prices pr ON p.product_id = pr.product_id) INNER JOIN categories_subcategories_types cst ON cst.product_id = p.product_id WHERE cst.category_id = (SELECT category_id FROM categories WHERE name= :category) and cst.subcategory_id = (SELECT subcategory_id FROM subcategories WHERE name= :subcategory) AND pr.active = 1 GROUP BY p.product_id";
+		$preparedquery = $connection->prepare($query);
+		$preparedquery->bindParam(":category",$category);
+		$preparedquery->bindParam(":subcategory",$subcategory);
+		echo "<input type='hidden' id='category' value='". $category ."'/>";
+		echo "<input type='hidden' id='subcategory' value='". $subcategory ."'/>";
+		$preparedquery->execute();
+		$results = $preparedquery->fetchAll();
+		$numberofproductstotal = count($results); 
+		$numberofproductspage = 6;
+		$numberofpages = $numberofproductstotal / $numberofproductspage;
+		$numberofpages = ceil($numberofpages);
+		if(isset($_GET['pagination'])){
+			$pagination = $_GET['pagination'];
+			$firstparameter = ((integer)$pagination-1) * $numberofproductspage;
+			$secondparameter = (integer)$pagination * $numberofproductspage;
+			$query = "SELECT pp.source as imgsrc, pp.alt as alt, p.product_id as productID, pr.net_price as price, round(pr.discount) as discount FROM ((productphotos pp INNER JOIN products p ON p.product_id = pp.product_id) INNER JOIN prices pr ON p.product_id = pr.product_id) INNER JOIN categories_subcategories_types cst ON cst.product_id = p.product_id WHERE cst.category_id = (SELECT category_id FROM categories WHERE name= :category) and cst.subcategory_id = (SELECT subcategory_id FROM subcategories WHERE name= :subcategory) AND pr.active = 1 GROUP BY p.product_id LIMIT $firstparameter,$secondparameter";
+		}
+		else{
+			$query = "SELECT pp.source as imgsrc, pp.alt as alt, p.product_id as productID, pr.net_price as price, round(pr.discount) as discount FROM ((productphotos pp INNER JOIN products p ON p.product_id = pp.product_id) INNER JOIN prices pr ON p.product_id = pr.product_id) INNER JOIN categories_subcategories_types cst ON cst.product_id = p.product_id WHERE cst.category_id = (SELECT category_id FROM categories WHERE name= :category) and cst.subcategory_id = (SELECT subcategory_id FROM subcategories WHERE name= :subcategory) AND pr.active = 1 GROUP BY p.product_id LIMIT 0,6";
+		}
+	}
+
+<div class="content">
+	<div class="product-model">	 
+	 <div class="container">
+		<h2>Our Products</h2>			
+		 <div class="col-md-9 product-model-sec">
+		 			
+					 $preparedquery = $connection->prepare($query);
+					 $preparedquery->bindParam(":category",$category);
+					 $preparedquery->bindParam(":subcategory",$subcategory);
+					 /* if(isset($_GET['pagination'])){
+						 $preparedquery->bindParam(":firstparameter",$firstparameter);
+						 $preparedquery->bindParam(":secondparameter",$secondparameter);
+					 } */
+					 $preparedquery->execute();
+					 $results = $preparedquery->fetchAll();
+					 foreach($results as $row):
+					 static $counter = 0;
+					 $counter++;
+					 
+					 <a href="'index.php?page=single&product='.$row->productID"><div class="product-grid">
+						<div class="more-product"><span> </span></div>						
+						<div class="product-img b-link-stripe b-animate-go  thickbox">
+							<img src="$row->imgsrc" class="img-responsive" alt="$row->alt">
+							<div class="b-wrapper">
+							<h4 class="b-animate b-from-left  b-delay03">							
+							<button> View </button>
+							</h4>
+							</div>
+						</div>
+					</a>					
+						<div class="product-info simpleCart_shelfItem">
+							<div class="product-info-cust prt_name">
+								<h4>Product #$counter</h4>								
+								<span class="item_price">€$row->price</span>
+								<div class="ofr">
+								  <!--<p class="pric1"><del>Rs 280</del></p>!-->
+						          <p class="disc">[$row->discount% Off]</p>
+								</div>
+								<a href="'index.php?page=single&product='.$row->productID" class="view_item">View</a>
+								<div class="clearfix"> </div>
+							</div>												
+						</div>
+					</div>
+					 endforeach; 
+					<div style="clear:both"></div>
+					<nav aria-label="Page navigation example">
+					<ul class="pagination justify-content-center">
+						<!--<li class="page-item">
+						<a class="page-link" href="#">Previous</a>
+						</li>!-->
+						 for($i=1;$i<=$numberofpages;$i++): 
+						<li class="page-item"><a class="page-link" href=" echo $_SERVER['REQUEST_URI'] . "&pagination=$i"">$i</a></li>
+						 endfor; 
+						<!--<li class="page-item">
+						<a class="page-link" href="#">Next</a>
+						</li>!-->
+					</ul>
+					</nav>
+				</div>
+			<div class="rsidebar span_1_of_left">
+				 
+				<section class="sky-form">
+					<h4>Sort</h4>
+					<select id="sortbtn">
+						<option value="0">SELECT</option>
+						<option value="pasc">Price (asc)</option>
+						<option value="pdesc">Price (desc)</option>
+						<option value="discasc">Discount (asc)</option>
+						<option value="discdesc">Discount (desc)</option>
+					</select>
+				 </section>
+				 <!--
+				 <section  class="sky-form">
+					 <h4><span class="glyphicon glyphicon-minus" aria-hidden="true"></span>DISCOUNTS</h4>
+					 <div class="row row1 scroll-pane">
+					  /*
+					 $query = "SELECT DISTINCT MAX(round(discount)) as max, MIN(round(discount)) as min FROM prices WHERE discount IS NOT NULL";
+					 $result = $connection->query($query)->fetch();
+					 $maxPrice = (integer)$result->max;
+					 $minPrice = (integer)$result->min;
+					 $itemRange = 5;
+					 $offset = $maxPrice / $itemRange;
+					 
+						 <div class="col col-4">
+								  for($i=1;$i<=$itemRange;$i++){
+									 echo '<label class="checkbox"><input type="checkbox" value="'. $minPrice . "-" . ($minPrice+=$offset) .'" name="discountchb"><i></i>' . ($minPrice-$offset) . '% - ' . ($minPrice) .'%</label>';
+								 }
+								 */
+						 </div>
+				 </section>  				 
+				 -->
+				 <section  class="sky-form">
+						<h4><span class="glyphicon glyphicon-minus" aria-hidden="true"></span>Price</h4>
+							<ul class="dropdown-menu1">
+								 <li><a href="">								               
+								<div id="slider-range"></div>							
+								<input type="text" id="amount" style="border: 0; font-weight: NORMAL;   font-family: 'Dosis-Regular';" />
+							 </a></li>			
+						  </ul>
+				   </section>
+				    $query = "SELECT round(p.net_price) as maxprice FROM prices p WHERE active = 1 ORDER BY p.net_price DESC LIMIT 1"; 
+						 $result = $connection->query($query)->fetch();
+				   
+				   <input type="hidden" id="pricemax" value=" $result->maxprice "/>
+
+				    $query = "SELECT round(p.net_price) as minprice FROM prices p WHERE active = 1 ORDER BY p.net_price ASC LIMIT 1"; 
+						 $result = $connection->query($query)->fetch();
+				   
+				   <input type="hidden" id="pricemin" value=" $result->minprice "/>
+				   <!---->
+					 <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+					 <link rel="stylesheet" type="text/css" href="css/jquery-ui.css">
+					<script type='text/javascript'>//<![CDATA[ 
+					var minprice = Number($("#pricemin").val());
+					var maxprice = Number($("#pricemax").val());
+					$(window).load(function(){
+					 $( "#slider-range" ).slider({
+								range: true,
+								min: minprice,
+								max: maxprice,
+								values: [ minprice, maxprice ],
+								slide: function( event, ui ) {  $( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+								}
+					 });
+					$( "#amount" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ) + " - $" + $( "#slider-range" ).slider( "values", 1 ) );
+
+					});//]]> 
+					</script>
+				 
+				   <section class="sky-form">
+					<button id="filterbtn">Apply filter</button>
+					<button id="clearfilterbtn">Clear filter</button>
+				   </section>				   
+			 </div>				 
+	      </div>
+		</div>
+</div>
+<!---->
+</div>

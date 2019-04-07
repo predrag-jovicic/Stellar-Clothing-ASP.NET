@@ -1,0 +1,36 @@
+﻿@model E_Commerce_Web_App.Models.ProductPhoto
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>ProductPhoto</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Source)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Source)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Alt)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Alt)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Product)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Product.Description)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Photo_id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

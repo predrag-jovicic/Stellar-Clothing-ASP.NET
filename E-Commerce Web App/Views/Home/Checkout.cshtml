@@ -1,0 +1,79 @@
+@model CartViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+<div class="content">
+    <div class="cart-items">
+        <div class="container">
+            @if (!Model.CartItems.Any())
+            {
+                <div class='content'><h2 align='center'>There are no products in the shopping cart</h2></div>
+            }
+            else
+            {
+                <div class="row">
+                    <div class="col-sm-10">
+                        <h2>My Shopping Bag</h2>
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="button" id="eraseallbtn" value="Delete all" />
+                    </div>
+                </div>
+                for (int i = 0; i < Model.CartItems.Count(); i++)
+                {
+                    <div class="cart-header">
+                        <div data-id="@i" class="close1"> </div>
+                        <div class="cart-sec simpleCart_shelfItem">
+                            <div class="cart-item cyc">
+                                <img src="@Model.CartItems[i].Photo.Source" class="img-responsive" alt="@Model.CartItems[i].Photo.Alt">
+                            </div>
+                            <div class="cart-item-info">
+                                <h3>
+                                    <a href="#">Product #@(i + 1)</a>
+                                    @if (Model.CartItems[i].Size != null)
+                                    {<span>Size: &nbsp @Model.CartItems[i].Size.Name</span>}
+                                    @if (Model.CartItems[i].Color != null)
+                                    {<span>Color: &nbsp<span id="@Model.CartItems[i].Color.Name"></span></span>}
+                                </h3>
+                                <ul class="qty">
+                                    <li>
+                                        <p>Quantity: &nbsp @Model.CartItems[i].Quantity</p>
+                                    </li>
+                                </ul>
+                                <div class="delivery">
+                                    <p>Price : €@Model.CartItems[i].Price</p><br />
+                                    <p class="subtotalprice">Subtotal : <b>€@(Model.CartItems[i].Price * Model.CartItems[i].Quantity)</b></p>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+
+                        </div>
+                    </div>
+                }
+                <div id="totalpart" class="row">
+                    <div class="col-md-11">
+                        <p>Total:</p>
+                    </div>
+                    <div class="col-md-1">
+                        <p><strong id="totalprice">€@Model.Total</strong></p>
+                    </div>
+                </div>
+                <div class="row" id="finishingdiv">
+                    <div class="col-md-4 col-lg-6">
+                        <input id="orderbtn" type='submit' value="Order" />
+                    </div>
+                </div>
+                <input type="hidden" id="RequestVerificationToken" name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
+            }
+        </div>
+    </div>
+    <!-- checkout -->
+</div>
+@section scripts{ 
+    <script src="~/js/script7.js"></script>
+}

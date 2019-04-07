@@ -1,0 +1,59 @@
+﻿@model IEnumerable<E_Commerce_Web_App.Models.HeadingMenu>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Link)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HasChildren)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Parent)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Item_Column)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Link)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HasChildren)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Parent)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Item_Column)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.HeadingItem_id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.HeadingItem_id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.HeadingItem_id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

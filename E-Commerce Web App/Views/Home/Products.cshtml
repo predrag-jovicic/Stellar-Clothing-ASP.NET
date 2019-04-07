@@ -1,0 +1,125 @@
+@model ProductsViewModel
+
+<div class="content">
+    @if (Model.Products.Any())
+    {
+        <div class="product-model">
+            <div class="container">
+                <h2>@Model.Subcategory</h2>
+                <div class="col-md-9 product-model-sec">
+
+                    @foreach (var product in Model.Products)
+                    {
+                        <a asp-controller="Home" asp-action="Single" asp-route-id="@product.Product_id">
+                            <div class="product-grid">
+                                <div class="more-product"><span> </span></div>
+                                <div class="product-img b-link-stripe b-animate-go  thickbox">
+                                    <img src="@product.Photo.Source" class"img-responsive" alt="@product.Photo.Alt">
+                                    <div class="b-wrapper">
+                                        <h4 class="b-animate b-from-left  b-delay03">
+                                            <button>View</button>
+                                        </h4>
+                                    </div>
+                                </div>
+                                <div class="product-info simpleCart_shelfItem">
+                                    <div class="product-info-cust prt_name">
+                                        <h4>@product.Name</h4>
+                                        <span class="item_price">€@product.Price.Net_price</span>
+                                        <div class="ofr">
+                                            <p class="disc">[@product.Price.Discount % Off]</p>
+                                        </div>
+                                        <a asp-controller="Home" asp-action="Single" asp-route-id="@product.Product_id"  class="view_item">View</a>
+                                        <div class="clearfix"> </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    }
+                </div>
+
+                <div class="rsidebar span_1_of_left">
+
+                    <section class="sky-form">
+                        <h4>Sort</h4>
+                        <select id="sortbtn">
+                            <option value="0">SELECT</option>
+                            <option value="pasc">Price (asc)</option>
+                            <option value="pdesc">Price (desc)</option>
+                            <option value="discasc">Discount (asc)</option>
+                            <option value="discdesc">Discount (desc)</option>
+                        </select>
+                    </section>
+                    <section class="sky-form">
+                        <h4><span class="glyphicon glyphicon-minus" aria-hidden="true"></span>Price</h4>
+                        <ul class="dropdown-menu1">
+                            <li>
+                                <a href="">
+                                    <div id="slider-range"></div>
+                                    <input type="text" id="amount" style="border: 0; font-weight: NORMAL;   font-family: 'Dosis-Regular';" />
+                                </a>
+                            </li>
+                        </ul>
+                    </section>
+
+                    <input type="hidden" id="pricemax" value="@Model.TheHighestPrice" />
+                    <input type="hidden" id="pricemin" value="@Model.TheSmallestPrice" />
+                    <input type="hidden" id="subcategory" value="@ViewBag.Subcategory"/>
+                    <input type="hidden" id="category" value="@ViewBag.Category"/>
+
+                    <!---->
+                    <script type="text/javascript" src="~/js/jquery-ui.min.js"></script>
+                    <link rel="stylesheet" type="text/css" href="~/css/jquery-ui.css">
+                    <script type='text/javascript'>
+                        //<![CDATA[
+                        var minprice = Number($("#pricemin").val());
+                        var maxprice = Number($("#pricemax").val());
+                        $(window).load(function () {
+                            $("#slider-range").slider({
+                                range: true,
+                                min: minprice,
+                                max: maxprice,
+                                values: [minprice, maxprice],
+                                slide: function (event, ui) {
+                                    $("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
+                                }
+                            });
+                            $("#amount").val("$" + $("#slider-range").slider("values", 0) + " - $" + $("#slider-range").slider("values", 1));
+
+                        });//]]>
+                    </script>
+
+                    <section class="sky-form">
+                        <button id="filterbtn">Apply filter</button>
+                        <button id="clearfilterbtn">Clear filter</button>
+                    </section>
+                </div>
+            </div>
+            <div style="clear:both"></div>
+            <div id="pagination">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        @for (int i = 1; i <= Model.NumberOfPages; i++)
+                        {
+                        <li class="page-item"><a class="page-link" asp-action="Products" asp-route-page="@i">@i</a></li>
+                        }
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    }
+    else
+    {
+        <h2 style="margin:10rem auto; text-align: center">There are no products available in the database which satisfy your conditions</h2>
+    }
+</div>
+    </div>
+    </div>
+
+@section scripts{
+    <script src='~/js/script6.js'></script>
+}
+
+@section extras{
+    <link href="~/css/form.css" rel="stylesheet" type="text/css" media="all" />
+    <script type="text/javascript" src="~/js/jquery.mousewheel.js"></script>
+}

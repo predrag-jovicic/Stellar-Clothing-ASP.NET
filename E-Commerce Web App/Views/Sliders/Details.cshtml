@@ -1,0 +1,36 @@
+﻿@model E_Commerce_Web_App.Models.Slider
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Slider</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Active)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Active)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Text)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Text)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Slider_id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

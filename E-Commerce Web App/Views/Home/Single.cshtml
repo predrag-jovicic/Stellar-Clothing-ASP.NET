@@ -1,0 +1,181 @@
+@model ProductDetailsViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@functions{
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+
+<div class="content">
+    <div class="single">
+        <div class="container">
+            <div class="single-grids">
+                <div class="col-md-4 single-grid1">
+                    <h2>Options</h2>
+                    <ul>
+
+                        <li><a href="index.php?page=login">Login</a></li>
+
+                        <li><a href="index.php?page=account">Register</a></li>
+
+                        <li><a href="index.php?page=checkout">View shopping cart</a></li>
+
+                        <li><a href="login.html">Contact us</a></li>
+                    </ul>
+                </div>
+                <div id="popupproduct">
+                    <div class="closeButton">&times;</div>
+                    <div id="popupheadproduct">
+                        <p>The product has been added to the shopping cart.</p>
+                    </div>
+                    <input type="button" value="OK" id="okdugme" />
+                </div>
+                <div class="col-md-4 single-grid">
+                    <div class="flexslider">
+                        <ul class="slides">
+                            @foreach (var photo in Model.Photos)
+                            {
+                                <li data-thumb="@photo.Source">
+                                    <div class="thumb-image"> <img src="@photo.Source" data-imagezoom="true" alt="@photo.Alt" class="img-responsive"></div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4 single-grid simpleCart_shelfItem">
+                    <h3>@Model.Name</h3>
+                    <p>@Model.Description</p>
+                    @if (Model.Colors.Any())
+                    {
+                        <script>var colorsAvailable = true;</script>
+                    }
+                    <ul class="chooseoption">
+                        @if (Model.Sizes.Any())
+                        {
+                            <h3>Size</h3>
+                            @foreach (var size in Model.Sizes)
+                            {
+                                <li><a class="productsize" href="#" value="@size.Size_id">@size.Name</a></li>
+                            }
+                        }
+                    </ul>
+                    <ul class="chooseoption">
+                        @if (!Model.Sizes.Any() && Model.Colors.Any())
+                        {
+                            <h3>Color</h3>
+                            <div id="fetchcolors">
+                                @foreach (var color in Model.Colors)
+                                {
+                                    <li><a href="#"><div class="productcolor" id="@color.Name" value="@color.Color_id"></div></a></li>
+                                }
+                            </div>
+                        }
+                    </ul>
+                    @if (!Model.Sizes.Any() && !Model.Colors.Any())
+                    {
+                        <script>
+                            $.ajax({
+                                url: "/api/products/amount",
+                                type: "GET",
+                                dataType: "JSON",
+                                data: {
+                                    productID: @Model.Product_id
+                                },
+                                success: function (data, xhr) {
+                                    $("#quantity").val(1);
+                                    $("#quantity").attr("max", data.amount);
+                                    variantId = data.productVariantId;
+                                    $("#quantity").on("blur", function () {
+                                        if (Number($("#quantity").val()) <= 0 || Number($("#quantity").val()) > Number($("#quantity").attr("max"))) {
+                                            $("#quantity").css("border", "1px solid red");
+                                        }
+                                        else {
+                                            $("#quantity").css("border", "1px solid gray");
+                                        }
+                                    });
+                                },
+                                error: function (xhr, statusTxt) {
+                                    console.log(xhr.status);
+                                }
+                            });
+                        </script>
+                    }
+                    <div class="galry">
+                        <div class="rating">
+                            <span>☆</span>
+                            <span>☆</span>
+                            <span>☆</span>
+                            <span>☆</span>
+                            <span>☆</span>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <p class="qty"> Qty :  </p><input min="1" type="number" id="quantity" name="quantity" value="1" class="form-control input-small">
+                    <div class="btn_form">
+                        <a href="#" disabled class="add-cart item_add">ADD TO CART</a>
+                    </div>
+                    <div class="prices">
+                        <h5 class="item_price">€@Model.Price</h5>
+                        <input type="hidden" id="price" value="$result->price" />
+                    </div>
+                </div>
+                <div class="clearfix"> </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" id="itemID" value="@Model.Product_id" />
+    <input type="hidden" id="RequestVerificationToken" name="RequestVerificationToken" value="@GetAntiXsrfRequestToken()">
+    <!-- collapse -->
+    <div class="collpse">
+        <div class="container">
+            <div class="panel-group collpse" id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingThree">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                Ratings
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                        <div class="panel-body">
+                            @if (Model.Rating == null)
+                            {
+                                <span>The product hasn't been rated by anyone.</span>
+                            }
+                            else
+                            {
+                                <span>Average rating for this product is: @Model.Rating.</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingFour">
+                        <h4 class="panel-title">
+                            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                help
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+                        <div class="panel-body">
+                            To add a product to the shopping cart, you must be logged in. If you don't have an account, please register. It's free and easy to do. If you are supplied with the information about sizes, that means that many sizes are available. So you have to choose the size you want. After choosing a size, you will be supplied with the information about available colors. Finally, you have to choose a quantity and press a button 'Add to cart'. Feel free to rate a product
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @section scripts{
+        <script src='~/js/script5.js'></script>
+        <script>
+            $(window).load(function () {
+                $(".flexslider").flexslider({
+                    animation: "slide",
+                    controlNav: "thumbnails"
+                });
+            });
+        </script>
+    }

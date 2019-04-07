@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Stellar Clothing - an E-Commerce online Shopping Category Flat Bootstrap Responsive Website Template | Home :: w3layouts</title>
+    <link href="~/css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="~/css/adminpanelstyle.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="~/css/owl.carousel.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="~/js/jquery.min.js"></script>
+    <script type="text/javascript" src="~/js/bootstrap-3.1.1.min.js"></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="adminpanel.php">Stellar Clothing Admin Panel</a>
+                </div>
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="adminpanel.php">Home</a></li>
+                    <li><a href="/Users">Users</a></li>
+                    <li><a href="/Roles">Roles</a></li>
+                    <li><a href="/HeadingMenus">Heading menu</a></li>
+                    <li><a href="/FooterMenus">Footer menu</a></li>
+                    <li><a href="/Products">Products</a></li>
+                    <li><a href="/Sizes">Sizes</a></li>
+                    <li><a href="/Colors">Colors</a></li>
+                    <li><a href="/Prices">Prices</a></li>
+                    <li><a href="allitems.php">All items</a></li>
+                    <li><a href="/Polls">Poll</a></li>
+                    <li><a href="/Categories">Categories</a></li>
+                    <li><a href="/Subcategories">Subcategories</a></li>
+                    <li><a href="/Types">Types</a></li>
+                    <li><a href="/Orders">Orders</a></li>
+                    <li><a href="/Sliders">Slider</a></li>
+                    <li><a href="../index.php">Back to home page</a></li>
+                    <li><a href="../logic/logout.php">Log out</a></li>
+                </ul>
+            </div>
+        </nav>
+        <div class="container">
+            <h2>@ViewBag.Heading</h2>
+            @RenderBody()
+        </div>
+            @RenderSection("Scripts", required: false)
+</body>
+
+</html>
